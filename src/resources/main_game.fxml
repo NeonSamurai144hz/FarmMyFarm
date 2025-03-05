@@ -11,7 +11,8 @@
       fx:controller="code.MainGameController"
       spacing="10"
       alignment="CENTER"
-      stylesheets="@css/game_styles.css">
+      stylesheets="@css/game_styles.css"
+      VBox.vgrow="ALWAYS">
 
     <!-- HUD Section -->
     <HBox spacing="20"
@@ -37,11 +38,11 @@
 
     <!-- Farm Map Section -->
     <GridPane fx:id="farmGrid"
-              hgap="2"
-              vgap="2"
+              hgap="1"
+              vgap="1"
               alignment="CENTER"
-              VBox.vgrow="ALWAYS"
-              styleClass="farm-grid">
+              styleClass="farm-grid"
+              VBox.vgrow="ALWAYS">
         <!-- Grid will be populated dynamically in the controller -->
     </GridPane>
 </VBox>

@@ -25,8 +25,8 @@ public class Main extends Application {
         primaryStage.setTitle("Farm to Farm");
         primaryStage.setScene(scene);
 
-        // Position the stage in the center of the screen
-        primaryStage.centerOnScreen();
+        // Set the view to fullscreen
+        primaryStage.setMaximized(true);
 
         primaryStage.show();
     }
@@ -35,6 +35,12 @@ public class Main extends Application {
         launch(args);
     }
 }
+
+
+
+
+
+
 
     // OG Attempt
 //            // Load the map FXML

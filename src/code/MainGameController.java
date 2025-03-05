@@ -1,5 +1,6 @@
 package code;
 
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
@@ -16,39 +17,25 @@ import java.util.ResourceBundle;
 
 public class MainGameController implements Initializable {
     // HUD Elements
-    @FXML
-    private Text usernameText;
-
-    @FXML
-    private Text levelText;
-
-    @FXML
-    private Text moneyText;
-
-    @FXML
-    private Text expText;
-
-    @FXML
-    private Button statisticsButton;
-
-    @FXML
-    private Button storeButton;
-
-    @FXML
-    private Button storageButton;
+    @FXML private Text usernameText;
+    @FXML private Text levelText;
+    @FXML private Text moneyText;
+    @FXML private Text expText;
+    @FXML private Button statisticsButton;
+    @FXML private Button storeButton;
+    @FXML private Button storageButton;
 
     // Farm Grid Elements
-    @FXML
-    private GridPane farmGrid;
+    @FXML private GridPane farmGrid;
 
-    @FXML
-    private VBox root;
-
-    private static final int GRID_SIZE = 168;
-    private int cellSize;
+    private static final int GRID_SIZE = 16;
+    private double cellSize = 32;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Initialize screen-responsive sizing
+        initializeResponsiveSizing();
+
         // Initialize HUD
         initializeHUD();
 
@@ -66,13 +53,28 @@ public class MainGameController implements Initializable {
         expText.setText("Exp to next level: 0/100");
     }
 
-    private void initializeResponsivesizing() {
+    private void initializeResponsiveSizing() {
         // Get screen dimensions
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-        // Calculate cell size based on screen width
-        double gridWidth = screenBounds.getWidth() * 0.9; // Use 90% of screen width
-        cellSize = (int) (gridWidth / GRID_SIZE);
+        // Calculate cell size to fill width and leave room for HUD
+        double gridWidth = screenBounds.getWidth() * 0.99; // Use 99% of screen width
+        double gridHeight = screenBounds.getHeight() * 0.8; // Use 80% of screen height
+
+        // Calculate cell size based on width
+        cellSize = gridWidth / GRID_SIZE;
+
+        // Adjust height if needed to ensure proper proportion
+        double calculatedGridHeight = cellSize * GRID_SIZE;
+        if (calculatedGridHeight > gridHeight) {
+            cellSize = gridHeight / GRID_SIZE;
+        }
+
+        System.out.println("Screen Width: " + screenBounds.getWidth());
+        System.out.println("Screen Height: " + screenBounds.getHeight());
+        System.out.println("Calculated Cell Size: " + cellSize);
+        System.out.println("Grid Width: " + (cellSize * GRID_SIZE));
+        System.out.println("Grid Height: " + (cellSize * GRID_SIZE));
     }
 
     private void createGrid() {
@@ -89,7 +91,8 @@ public class MainGameController implements Initializable {
     private Rectangle createParcel() {
         Rectangle parcel = new Rectangle(cellSize, cellSize);
         parcel.setFill(Color.LIGHTGREEN);  // Default empty land color
-        parcel.setStroke(Color.DARKGREEN);
+        parcel.setStroke(Color.GREEN);
+        parcel.setStrokeWidth(0.5);
 
         // Plant growth simulation on click
         parcel.setOnMouseClicked(event -> simulatePlantGrowth((Rectangle) event.getSource()));

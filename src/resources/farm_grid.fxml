@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane fx:id="farmGrid"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="code.FarmGridController"
+          hgap="1"
+          vgap="1"
+          alignment="CENTER"
+          styleClass="farm-grid">
+</GridPane>
