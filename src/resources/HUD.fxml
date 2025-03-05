@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+      <BorderPane prefHeight="200.0" prefWidth="200.0">
+         <bottom>
+            <StackPane prefHeight="110.0" prefWidth="1920.0" style="-fx-background-color: rgba(255, 0, 0, 0.5);" BorderPane.alignment="CENTER">
+               <children>
+                  <Pane prefHeight="110.0" prefWidth="1920.0">
+                     <children>
+                        <Button id="statistics" layoutX="502.0" layoutY="27.0" mnemonicParsing="false" text="Statistics" />
+                        <Button id="store" layoutX="934.0" layoutY="28.0" mnemonicParsing="false" text="Store" />
+                        <Button id="storage" layoutX="1545.0" layoutY="28.0" mnemonicParsing="false" text="STORAGE" />
+                        <HBox prefHeight="111.0" prefWidth="218.0">
+                           <children>
+                              <VBox prefHeight="111.0" prefWidth="218.0">
+                                 <children>
+                                    <Pane prefHeight="110.0" prefWidth="218.0">
+                                       <children>
+                                          <Text fontSmoothingType="LCD" layoutX="50.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username*" textAlignment="CENTER" wrappingWidth="119.18310737609863">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="7.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Level:" wrappingWidth="34.72602081298828" />
+                                          <Text layoutX="102.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Money:" wrappingWidth="43.92601776123047" />
+                                          <Text layoutX="53.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="exp to next level: ">
+                                             <font>
+                                                <Font size="10.0" />
+                                             </font>
+                                          </Text>
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </Pane>
+               </children>
+            </StackPane>
+         </bottom>
+      </BorderPane>

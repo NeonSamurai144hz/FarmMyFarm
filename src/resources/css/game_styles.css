@@ -1,0 +1,30 @@
+.root {
+    -fx-background-color: #F0F4F0;
+}
+
+.hud-container {
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+}
+
+.hud-text {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.game-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15 8 15;
+}
+
+.game-button:hover {
+    -fx-background-color: #45a049;
+}
+
+.farm-grid {
+    -fx-background-color: #E0E0E0;
+    -fx-background-radius: 10;
+}

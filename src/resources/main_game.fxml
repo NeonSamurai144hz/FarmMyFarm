@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.text.Text?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="code.MainGameController"
+      spacing="10"
+      alignment="CENTER"
+      stylesheets="@css/game_styles.css">
+
+    <!-- HUD Section -->
+    <HBox spacing="20"
+          alignment="CENTER"
+          VBox.vgrow="NEVER"
+          styleClass="hud-container">
+        <VBox spacing="5" alignment="CENTER">
+            <Text fx:id="usernameText" text="Player" styleClass="hud-text"/>
+            <Text fx:id="levelText" text="Level: 1" styleClass="hud-text"/>
+        </VBox>
+
+        <VBox spacing="5" alignment="CENTER">
+            <Text fx:id="moneyText" text="Money: 500" styleClass="hud-text"/>
+            <Text fx:id="expText" text="Exp to next level: 0/100" styleClass="hud-text"/>
+        </VBox>
+
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="statisticsButton" text="Statistics" styleClass="game-button"/>
+            <Button fx:id="storeButton" text="Store" styleClass="game-button"/>
+            <Button fx:id="storageButton" text="Storage" styleClass="game-button"/>
+        </HBox>
+    </HBox>
+
+    <!-- Farm Map Section -->
+    <GridPane fx:id="farmGrid"
+              hgap="2"
+              vgap="2"
+              alignment="CENTER"
+              VBox.vgrow="ALWAYS"
+              styleClass="farm-grid">
+        <!-- Grid will be populated dynamically in the controller -->
+    </GridPane>
+</VBox>
