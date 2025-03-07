@@ -5,7 +5,6 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.text.Text?>
-<?import javafx.geometry.Insets?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="code.MainGameController"
@@ -14,7 +13,7 @@
       stylesheets="@css/game_styles.css"
       VBox.vgrow="ALWAYS">
 
-    <!-- HUD Section -->
+    <!-- HUD -->
     <HBox spacing="20"
           alignment="CENTER"
           VBox.vgrow="NEVER"
@@ -30,19 +29,19 @@
         </VBox>
 
         <HBox spacing="10" alignment="CENTER">
-            <Button fx:id="statisticsButton" text="Statistics" styleClass="game-button"/>
-            <Button fx:id="storeButton" text="Store" styleClass="game-button"/>
-            <Button fx:id="storageButton" text="Storage" styleClass="game-button"/>
+            <Button fx:id="achievmentsButton" text="Achievements" styleClass="game-button"/>
+            <Button fx:id="storeStorageButton" text="Storage and Store" styleClass="game-button"/>
+            <Button fx:id="chooseCropButton" text="Choose Crop" styleClass="game-button"/>
+            <Button fx:id="chooseAnimalButton" text="Choose Animal" styleClass="game-button"/>
         </HBox>
     </HBox>
 
-    <!-- Farm Map Section -->
     <GridPane fx:id="farmGrid"
               hgap="1"
               vgap="1"
               alignment="CENTER"
               styleClass="farm-grid"
               VBox.vgrow="ALWAYS">
-        <!-- Grid will be populated dynamically in the controller -->
+        <!-- Grid -->
     </GridPane>
 </VBox>

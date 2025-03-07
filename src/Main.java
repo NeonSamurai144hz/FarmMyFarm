@@ -9,23 +9,18 @@ import javafx.stage.Stage;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Load the combined FXML
         Parent root = FXMLLoader.load(getClass().getResource("/resources/main_game.fxml"));
 
-        // Get screen dimensions
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-        // Create the scene with dynamic sizing
         Scene scene = new Scene(root,
                 screenBounds.getWidth() * 0.9,
                 screenBounds.getHeight() * 0.9
         );
 
-        // Set up the stage
         primaryStage.setTitle("Farm to Farm");
         primaryStage.setScene(scene);
 
-        // Set the view to fullscreen
         primaryStage.setMaximized(true);
 
         primaryStage.show();

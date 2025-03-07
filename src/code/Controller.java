@@ -17,13 +17,13 @@ public class Controller {
     }
 
     public void moveLeft(ActionEvent e) {
-        myPlayer.setX(x -= 10);  // Changed to setX and -= for left movement
-        System.out.println("Left");  // Fixed print message
+        myPlayer.setX(x -= 10);
+        System.out.println("Left");
     }
 
     public void moveRight(ActionEvent e) {
-        myPlayer.setX(x += 10);  // Changed to setX and += for right movement
-        System.out.println("Right");  // Fixed print message
+        myPlayer.setX(x += 10);
+        System.out.println("Right");
     }
 
     public void moveDown(ActionEvent e) {

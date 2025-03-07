@@ -8,22 +8,16 @@ import javax.swing.plaf.basic.BasicButtonUI;
 public class HUDController {
     @FXML
     private BasicButtonUI statisticsButton;
-
     @FXML
     private BasicButtonUI storeButton;
-
     @FXML
     private BasicButtonUI storageButton;
-
     @FXML
     private Text usernameText;
-
     @FXML
     private Text levelText;
-
     @FXML
     private Text moneyText;
-
     @FXML
     private Text expText;
 
@@ -32,7 +26,7 @@ public class HUDController {
         // Initialize HUD with default or placeholder values
         usernameText.setText("Player");
         levelText.setText("Level: 1");
-        moneyText.setText("Money: 500");
+        moneyText.setText("Money: " + moneyText.getText());
         expText.setText("Exp to next level: 0/100");
     }
 
