@@ -72,14 +72,14 @@ public class Finance {
     public static int getTotalSales() {
         return transactions.stream()
                 .filter(t -> t.getType() == TransactionType.SELL)
-                .mapToInt(Transaction::getPrice)
+                .mapToInt(t -> t.getAmount() * t.getPrice())  // multiply amount by price
                 .sum();
     }
 
     public static int getTotalExpenses() {
         return transactions.stream()
                 .filter(t -> t.getType() == TransactionType.BUY)
-                .mapToInt(Transaction::getPrice)
+                .mapToInt(t -> t.getAmount() * t.getPrice())  // multiply amount by price
                 .sum();
     }
 
@@ -100,7 +100,7 @@ public class Finance {
                 .filter(t -> t.getType() == TransactionType.SELL)
                 .forEach(t -> {
                     String key = t.getItemName();
-                    sales.put(key, sales.getOrDefault(key, 0) + t.getPrice());
+                    sales.put(key, sales.getOrDefault(key, 0) + t.getAmount());
                 });
         return sales;
     }

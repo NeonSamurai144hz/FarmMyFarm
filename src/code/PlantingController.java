@@ -21,7 +21,7 @@ public class PlantingController {
     private Map<CropType, Integer> cropStorage = new HashMap<>();
     private final int MAX_CROPS = 100;
 
-    class GrowthData {
+    static class GrowthData {
         Timeline timeline;
         CropType cropType;
 

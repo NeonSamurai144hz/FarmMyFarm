@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
@@ -39,6 +40,8 @@ public class MainGameController implements Initializable {
 
     private static final int GRID_SIZE = 16;
     private double cellSize = 32;
+    private Timeline saleTimer;
+    private Sale currentSale;
 
     // Use separate controllers for crop and animal logic
     private PlantingController plantingController = new PlantingController();
@@ -53,6 +56,7 @@ public class MainGameController implements Initializable {
         createGrid();
         setupButtonListeners();
         setMoney(GameEconomy.getPlayerMoney());
+        setupSaleTimer();
     }
 
     private void initializeHUD() {
@@ -119,7 +123,7 @@ public class MainGameController implements Initializable {
 
 
     private void setupButtonListeners() {
-        financeButton.setOnAction(event -> System.out.println("Finance not implemented"));
+        financeButton.setOnAction(event -> openFinanceModal());
         storeStorageButton.setOnAction(event -> openStorageStoreModal());
         chooseCropButton.setOnAction(event -> {
             isAnimalMode = false;
@@ -147,6 +151,15 @@ public class MainGameController implements Initializable {
         ((VBox) farmGrid.getParent()).getChildren().add(buttonBox);
     }
 
+    private int getCurrentPrice(String itemType, String itemName) {
+        if (currentSale != null && currentSale.isActive() &&
+                currentSale.getItemType().equals(itemType) &&
+                currentSale.getItemName().equals(itemName)) {
+            return currentSale.getSalePrice();
+        }
+        return itemType.equals("Animal") ? GameEconomy.BUY_PRICE * 3 : GameEconomy.BUY_PRICE;
+    }
+
     private void openFinanceModal() {
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
@@ -164,59 +177,133 @@ public class MainGameController implements Initializable {
         Text totalExpenses = new Text("Total Expenses: $" + Finance.getTotalExpenses());
         Text netProfit = new Text("Net Profit: $" + (Finance.getTotalSales() - Finance.getTotalExpenses()));
 
-        // Sales by type section
-        Text typeTitle = new Text("\nSales by Type");
-        typeTitle.setStyle("-fx-font-weight: bold");
-
-        VBox typeContent = new VBox(5);
-        for (Map.Entry<String, Integer> entry : Finance.getItemSalesByType().entrySet()) {
-            typeContent.getChildren().add(new Text(entry.getKey() + ": $" + entry.getValue()));
-        }
-
-        // Sales by item section
-        Text itemTitle = new Text("\nSales by Item");
-        itemTitle.setStyle("-fx-font-weight: bold");
-
-        VBox itemContent = new VBox(5);
-        for (Map.Entry<String, Integer> entry : Finance.getItemSalesByName().entrySet()) {
-            itemContent.getChildren().add(new Text(entry.getKey() + ": $" + entry.getValue()));
-        }
-
-        // Transaction history section
-        Text historyTitle = new Text("\nTransaction History");
-        historyTitle.setStyle("-fx-font-weight: bold");
-
-        VBox historyContent = new VBox(5);
-        for (Finance.Transaction transaction : Finance.getTransactions()) {
-            historyContent.getChildren().add(new Text(transaction.toString()));
-        }
-
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> modalStage.close());
 
         content.getChildren().addAll(
-                summaryTitle, totalSales, totalExpenses, netProfit,
-                typeTitle, typeContent,
-                itemTitle, itemContent,
-                historyTitle, historyContent,
+                summaryTitle,
+                totalSales,
+                totalExpenses,
+                netProfit,
                 closeButton
         );
 
-        ScrollPane scrollPane = new ScrollPane(content);
-        scrollPane.setFitToWidth(true);
-        Scene modalScene = new Scene(scrollPane, 400, 500);
+        Scene modalScene = new Scene(content, 400, 300);
         modalStage.setScene(modalScene);
         modalStage.showAndWait();
     }
 
+    private void setupSaleTimer() {
+        saleTimer = new Timeline(
+                new KeyFrame(Duration.seconds(20), e -> tryStartSale())  // Changed from 30 to 10 seconds
+        );
+        saleTimer.setCycleCount(Timeline.INDEFINITE);
+        saleTimer.play();
+    }
+
+    private void tryStartSale() {
+        if (currentSale != null && currentSale.isActive()) {
+            return;
+        }
+
+        if (Math.random() < 0.5) { // 50% chance
+            // Randomly choose between crops and animals
+            if (Math.random() < 0.5) {
+                CropType[] crops = CropType.values();
+                CropType selectedCrop = crops[(int)(Math.random() * crops.length)];
+                currentSale = new Sale("Crop", selectedCrop.toString(), GameEconomy.BUY_PRICE);
+            } else {
+                AnimalType[] animals = AnimalType.values();
+                AnimalType selectedAnimal = animals[(int)(Math.random() * animals.length)];
+                currentSale = new Sale("Animal", selectedAnimal.toString(), GameEconomy.BUY_PRICE * 3);
+            }
+            showSaleNotification();
+        }
+    }
+
+    private void showSaleNotification() {
+        Stage notification = new Stage();
+        notification.initModality(Modality.NONE);
+        notification.setTitle("Sale Alert!");
+
+        VBox content = new VBox(10);
+        content.setPadding(new Insets(20));
+        content.setAlignment(Pos.CENTER);
+
+        Text itemText = new Text(currentSale.getItemName() + " ON SALE!");
+        Text priceText = new Text("Original Price: $" + currentSale.getOriginalPrice());
+        priceText.setStrikethrough(true);
+        Text saleText = new Text("Sale Price: $" + currentSale.getSalePrice());
+        saleText.setFill(Color.RED);
+        Text timerText = new Text("90 seconds remaining");
+
+        content.getChildren().addAll(itemText, priceText, saleText, timerText);
+
+        Scene scene = new Scene(content);
+        notification.setScene(scene);
+        notification.show();
+
+        // Update timer
+        Timeline countdown = new Timeline(
+                new KeyFrame(Duration.seconds(1), e -> {
+                    long remaining = currentSale.getTimeRemaining() / 1000;
+                    timerText.setText(remaining + " seconds remaining");
+                    if (remaining <= 0) {
+                        notification.close();
+                        currentSale = null;
+                    }
+                })
+        );
+        countdown.setCycleCount((int)currentSale.getTimeRemaining() / 1000);
+        countdown.play();
+    }
+
     private void saveGame() {
+        // Create grid data array
+        ParcelData[][] gridData = new ParcelData[GRID_SIZE][GRID_SIZE];
+
+        for (int row = 0; row < GRID_SIZE; row++) {
+            for (int col = 0; col < GRID_SIZE; col++) {
+                Rectangle parcel = (Rectangle) getNodeFromGridPane(farmGrid, col, row);
+                if (parcel != null) {
+                    ParcelData data = new ParcelData(ParcelData.ParcelType.EMPTY);
+
+                    if (parcel.getUserData() instanceof PlantingController.GrowthData) {
+                        PlantingController.GrowthData growthData =
+                                (PlantingController.GrowthData) parcel.getUserData();
+                        if (growthData.timeline == null) {
+                            data.setType(ParcelData.ParcelType.READY_CROP);
+                        } else {
+                            data.setType(ParcelData.ParcelType.GROWING_CROP);
+                        }
+                        data.setCropType(growthData.cropType);
+                    }
+                    else if (parcel.getUserData() instanceof AnimalController.GrowthData) {
+                        AnimalController.GrowthData growthData =
+                                (AnimalController.GrowthData) parcel.getUserData();
+                        if (growthData.isAdult) {
+                            data.setType(ParcelData.ParcelType.ADULT_ANIMAL);
+                        } else {
+                            data.setType(ParcelData.ParcelType.GROWING_ANIMAL);
+                        }
+                        data.setAnimalType(growthData.animalType);
+                        data.setGrowthStage(growthData.feedingStage);
+                        data.setAdult(growthData.isAdult);
+                    }
+
+                    gridData[row][col] = data;
+                }
+            }
+        }
+
         GameSaveData saveData = new GameSaveData(
                 GameEconomy.getPlayerMoney(),
                 plantingController.getCropStorage(),
                 animalController.getAnimalStorage(),
                 animalController.getFeedStorage(),
                 animalController.getResourceStorage(),
-                Finance.getTransactions()
+                Finance.getTransactions(),
+                gridData
         );
         GameSaveManager.saveGame(saveData);
     }
@@ -240,12 +327,73 @@ public class MainGameController implements Initializable {
                 animalController.updateFeedStorage(entry.getKey(), entry.getValue());
             }
 
+            for (Map.Entry<Resource, Integer> entry : saveData.getResourceStorage().entrySet()) {
+                animalController.updateResourceStorage(entry.getKey(), entry.getValue());
+            }
+
             // Update UI
             setMoney(saveData.getPlayerMoney());
 
             // Restore transactions
             Finance.setTransactions(saveData.getTransactions());
+
+            // Restore grid state
+            ParcelData[][] gridData = saveData.getGridData();
+            if (gridData != null) {
+                for (int row = 0; row < GRID_SIZE; row++) {
+                    for (int col = 0; col < GRID_SIZE; col++) {
+                        ParcelData data = gridData[row][col];
+                        Rectangle parcel = (Rectangle) getNodeFromGridPane(farmGrid, col, row);
+
+                        if (parcel != null && data != null) {
+                            switch (data.getType()) {
+                                case READY_CROP:
+                                    parcel.setFill(data.getCropType().getStage3Color());
+                                    parcel.setUserData(new PlantingController.GrowthData(null, data.getCropType()));
+                                    break;
+                                case GROWING_CROP:
+                                    parcel.setFill(data.getCropType().getStage1Color());
+                                    Timeline cropTimeline = new Timeline(
+                                            new KeyFrame(Duration.seconds(2), e ->
+                                                    parcel.setFill(data.getCropType().getStage2Color())),
+                                            new KeyFrame(Duration.seconds(4), e -> {
+                                                parcel.setFill(data.getCropType().getStage3Color());
+                                                parcel.setUserData(new PlantingController.GrowthData(null, data.getCropType()));
+                                            })
+                                    );
+                                    parcel.setUserData(new PlantingController.GrowthData(cropTimeline, data.getCropType()));
+                                    cropTimeline.play();
+                                    break;
+                                case GROWING_ANIMAL:
+                                case ADULT_ANIMAL:
+                                    if (data.isAdult()) {
+                                        parcel.setFill(data.getAnimalType().getStage3Color());
+                                    } else {
+                                        parcel.setFill(data.getAnimalType().getStage1Color());
+                                    }
+                                    AnimalController.GrowthData animalData = new AnimalController.GrowthData(null, data.getAnimalType());
+                                    animalData.feedingStage = data.getGrowthStage();
+                                    animalData.isAdult = data.isAdult();
+                                    parcel.setUserData(animalData);
+                                    break;
+                                default:
+                                    parcel.setFill(Color.LIGHTGREEN);
+                                    parcel.setUserData(null);
+                            }
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    private Node getNodeFromGridPane(GridPane gridPane, int col, int row) {
+        for (Node node : gridPane.getChildren()) {
+            if (GridPane.getColumnIndex(node) == col && GridPane.getRowIndex(node) == row) {
+                return node;
+            }
+        }
+        return null;
     }
 
     private void openStorageStoreModal() {
@@ -309,6 +457,8 @@ public class MainGameController implements Initializable {
                 resourceLabel.setText(resource + ": " + (count - 1) +
                         "/" + animalController.getMaxResources());
                 updateMoneyDisplays(moneyDisplay);
+                // Add transaction record
+                Finance.recordSellTransaction("Resource", resource.toString(), 1, resource.getSellPrice());
             }
         });
 
@@ -338,14 +488,40 @@ public class MainGameController implements Initializable {
 
         Label cropLabel = new Label();
         Button sellButton = new Button("Sell ($" + GameEconomy.SELL_PRICE + ")");
-        Button buyButton = new Button("Buy ($" + GameEconomy.BUY_PRICE + ")");
+        Button buyButton = new Button();
         Button transferButton = new Button("Transfer to Feed");
 
         int cropCount = plantingController.getCropStorage().getOrDefault(cropType, 0);
         cropLabel.setText(cropType + ": " + cropCount + "/" + plantingController.getMaxCrops());
 
+        // Update button text based on sale status
+        Timeline updatePrice = new Timeline(
+                new KeyFrame(Duration.seconds(0.5), e -> {
+                    int price = getCurrentPrice("Crop", cropType.toString());
+                    if (price < GameEconomy.BUY_PRICE) {
+                        buyButton.setText("Buy ($" + GameEconomy.BUY_PRICE + ") $" + price);
+                        buyButton.setStyle("-fx-text-fill: red;");
+                    } else {
+                        buyButton.setText("Buy ($" + GameEconomy.BUY_PRICE + ")");
+                        buyButton.setStyle("");
+                    }
+                })
+        );
+        updatePrice.setCycleCount(Timeline.INDEFINITE);
+        updatePrice.play();
+
         sellButton.setOnAction(e -> handleCropSell(cropType, cropLabel, moneyDisplay));
-        buyButton.setOnAction(e -> handleCropBuy(cropType, cropLabel, moneyDisplay));
+        buyButton.setOnAction(e -> {
+            int price = getCurrentPrice("Crop", cropType.toString());
+            int currentCount = plantingController.getCropStorage().getOrDefault(cropType, 0);
+            if (currentCount < plantingController.getMaxCrops() && GameEconomy.spendMoney(price)) {
+                plantingController.updateCropStorage(cropType, currentCount + 1);
+                cropLabel.setText(cropType + ": " + (currentCount + 1) + "/" + plantingController.getMaxCrops());
+                updateMoneyDisplays(moneyDisplay);
+                Finance.recordBuyTransaction("Crop", cropType.toString(), 1, price);
+            }
+        });
+
         transferButton.setOnAction(e -> {
             int currentCropCount = plantingController.getCropStorage().getOrDefault(cropType, 0);
             int currentFeedCount = animalController.getFeedAmount(cropType);
@@ -468,6 +644,8 @@ public class MainGameController implements Initializable {
             GameEconomy.addMoney(GameEconomy.SELL_PRICE);
             cropLabel.setText(cropType + ": " + (currentCount - 1) + "/" + plantingController.getMaxCrops());
             updateMoneyDisplays(moneyDisplay);
+            // Add transaction record
+            Finance.recordSellTransaction("Crop", cropType.toString(), 1, GameEconomy.SELL_PRICE);
         }
     }
 
@@ -477,6 +655,8 @@ public class MainGameController implements Initializable {
             plantingController.updateCropStorage(cropType, currentCount + 1);
             cropLabel.setText(cropType + ": " + (currentCount + 1) + "/" + plantingController.getMaxCrops());
             updateMoneyDisplays(moneyDisplay);
+            // Add transaction record
+            Finance.recordBuyTransaction("Crop", cropType.toString(), 1, GameEconomy.BUY_PRICE);
         }
     }
 
@@ -499,6 +679,8 @@ public class MainGameController implements Initializable {
             GameEconomy.addMoney(GameEconomy.SELL_PRICE * 2);
             animalLabel.setText(animalType + ": " + (currentCount - 1) + "/" + animalController.getMaxAnimals());
             updateMoneyDisplays(moneyDisplay);
+            // Add transaction record
+            Finance.recordSellTransaction("Animal", animalType.toString(), 1, GameEconomy.SELL_PRICE * 2);
         }
     }
 
@@ -508,6 +690,8 @@ public class MainGameController implements Initializable {
             animalController.updateAnimalStorage(animalType, currentCount + 1);
             animalLabel.setText(animalType + ": " + (currentCount + 1) + "/" + animalController.getMaxAnimals());
             updateMoneyDisplays(moneyDisplay);
+            // Add transaction record
+            Finance.recordBuyTransaction("Animal", animalType.toString(), 1, GameEconomy.BUY_PRICE * 3);
         }
     }
 

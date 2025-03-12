@@ -18,7 +18,7 @@ public class AnimalController {
     private final int MAX_ANIMALS = 50;
     private final int MAX_FEED = 100;
 
-    public class GrowthData {
+    public static class GrowthData {
         Timeline timeline;
         AnimalType animalType;
         int feedingStage;
