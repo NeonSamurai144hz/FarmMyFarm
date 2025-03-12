@@ -41,10 +41,8 @@ public class FarmGridController {
         });
     }
 
-    /**
-     * Left click handler: If the plot is empty or in growth, plant the currently selected crop.
-     * If fully grown (assumed by darkgreen background), harvest the crop (reset the plot).
-     */
+
+    // planting using left click
     private void handleLeftClick(Pane plot) {
         String style = plot.getStyle();
         if (style != null && style.contains("darkgreen")) {

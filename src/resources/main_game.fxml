@@ -29,7 +29,7 @@
         </VBox>
 
         <HBox spacing="10" alignment="CENTER">
-            <Button fx:id="achievmentsButton" text="Achievements" styleClass="game-button"/>
+            <Button fx:id="financeButton" text="Finance" styleClass="game-button"/>
             <Button fx:id="storeStorageButton" text="Storage and Store" styleClass="game-button"/>
             <Button fx:id="chooseCropButton" text="Choose Crop" styleClass="game-button"/>
             <Button fx:id="chooseAnimalButton" text="Choose Animal" styleClass="game-button"/>

@@ -1,7 +1,7 @@
 package code;
 
+import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
-
 import java.util.Map;
 import java.util.HashMap;
 import javafx.animation.KeyFrame;
@@ -31,12 +31,23 @@ public class PlantingController {
         }
     }
 
-    public void simulatePlantGrowth(Rectangle parcel) {
+    public boolean simulatePlantGrowth(Rectangle parcel) {
         if (parcel.getUserData() instanceof GrowthData) {
-            return; // Already growing
+            return false;
         }
 
         CropType currentCrop = CropSelection.getSelectedCropType();
+
+            // check for seeds
+        int currentCount = cropStorage.getOrDefault(currentCrop, 0);
+        if (currentCount <= 0) {
+            showAlert("Not enough seeds", "You don't have any " + currentCrop.toString().toLowerCase() + " seeds.");
+            return false;
+        }
+
+        cropStorage.put(currentCrop, currentCount - 1);
+
+            // growth animation
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(1), e -> parcel.setFill(currentCrop.getStage1Color())),
                 new KeyFrame(Duration.seconds(4), e -> parcel.setFill(currentCrop.getStage2Color())),
@@ -48,8 +59,17 @@ public class PlantingController {
 
         parcel.setUserData(new GrowthData(timeline, currentCrop));
         timeline.play();
+        return true;
     }
-
+        //alert if no seeds in store
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+        //chose crop type
     public void openCropSelectionModal() {
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
@@ -59,45 +79,38 @@ public class PlantingController {
         modalLayout.setPadding(new Insets(20));
         modalLayout.setAlignment(Pos.CENTER);
 
-        Button wheatButton = new Button("Wheat");
-        wheatButton.setOnAction(e -> {
-            CropSelection.setSelectedCropType(CropType.WHEAT);
-            modalStage.close();
-            System.out.println("Selected crop type: Wheat");
-        });
+        for (CropType cropType : CropType.values()) {
+            int count = cropStorage.getOrDefault(cropType, 0);
+            Button cropButton = new Button(cropType.toString() + " (" + count + ")");
 
-        Button carrotsButton = new Button("Carrots");
-        carrotsButton.setOnAction(e -> {
-            CropSelection.setSelectedCropType(CropType.CARROTS);
-            modalStage.close();
-            System.out.println("Selected crop type: Carrots");
-        });
+            cropButton.setDisable(count <= 0);
 
-        Button potatoesButton = new Button("Potatoes");
-        potatoesButton.setOnAction(e -> {
-            CropSelection.setSelectedCropType(CropType.POTATOES);
-            modalStage.close();
-            System.out.println("Selected crop type: Potatoes");
-        });
+            cropButton.setOnAction(e -> {
+                CropSelection.setSelectedCropType(cropType);
+                modalStage.close();
+                System.out.println("Selected crop type: " + cropType);
+            });
 
-        modalLayout.getChildren().addAll(wheatButton, carrotsButton, potatoesButton);
+            modalLayout.getChildren().add(cropButton);
+        }
 
-        Scene scene = new Scene(modalLayout, 200, 150);
+        Button closeButton = new Button("Close");
+        closeButton.setOnAction(e -> modalStage.close());
+        modalLayout.getChildren().add(closeButton);
+
+        Scene scene = new Scene(modalLayout, 200, 200);
         modalStage.setScene(scene);
         modalStage.showAndWait();
     }
-
+        //allows crop harvesting
     public void harvestCrop(Rectangle parcel) {
         if (parcel.getUserData() instanceof GrowthData) {
             GrowthData data = (GrowthData) parcel.getUserData();
-            if (data.timeline == null) { // Fully grown
-                // Harvest the crop
+            if (data.timeline == null) {
                 int currentCount = cropStorage.getOrDefault(data.cropType, 0);
                 if (currentCount < MAX_CROPS) {
                     cropStorage.put(data.cropType, currentCount + 1);
-                    GameEconomy.addMoney(5);  // Reward for harvesting
                 }
-                // Reset the parcel
                 parcel.setFill(Color.LIGHTGREEN);
                 parcel.setUserData(null);
             }
@@ -107,11 +120,9 @@ public class PlantingController {
     public Map<CropType, Integer> getCropStorage() {
         return cropStorage;
     }
-
     public int getMaxCrops() {
         return MAX_CROPS;
     }
-
     public void updateCropStorage(CropType cropType, int newAmount) {
         cropStorage.put(cropType, newAmount);
     }

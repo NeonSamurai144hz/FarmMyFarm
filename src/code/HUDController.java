@@ -6,6 +6,7 @@ import javafx.scene.text.Text;
 import javax.swing.plaf.basic.BasicButtonUI;
 
 public class HUDController {
+        //buttons initialization
     @FXML
     private BasicButtonUI statisticsButton;
     @FXML
@@ -23,26 +24,22 @@ public class HUDController {
 
     @FXML
     public void initialize() {
-        // Initialize HUD with default or placeholder values
         usernameText.setText("Player");
         levelText.setText("Level: 1");
         moneyText.setText("Money: " + moneyText.getText());
         expText.setText("Exp to next level: 0/100");
     }
 
-    // Methods to update HUD values
+    //setters for the hud
     public void setUsername(String username) {
         usernameText.setText(username);
     }
-
     public void setLevel(int level) {
         levelText.setText("Level: " + level);
     }
-
     public void setMoney(int money) {
         moneyText.setText("Money: " + money);
     }
-
     public void setExp(int currentExp, int nextLevelExp) {
         expText.setText("Exp to next level: " + currentExp + "/" + nextLevelExp);
     }

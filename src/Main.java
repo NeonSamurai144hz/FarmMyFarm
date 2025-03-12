@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/resources/main_game.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/resources/main_game.fxml")); // load fxml file where all of the game mechanics are initialiazed
 
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
@@ -17,11 +17,12 @@ public class Main extends Application {
                 screenBounds.getWidth() * 0.9,
                 screenBounds.getHeight() * 0.9
         );
+        // debugg for a screen sizing problem mAking the window not as wide as your screen
 
         primaryStage.setTitle("Farm to Farm");
         primaryStage.setScene(scene);
 
-        primaryStage.setMaximized(true);
+        primaryStage.setMaximized(true); // fullscreen
 
         primaryStage.show();
     }
@@ -38,23 +39,18 @@ public class Main extends Application {
 
 
     // OG Attempt
-//            // Load the map FXML
 //        FXMLLoader mapLoader = new FXMLLoader(getClass().getResource("/resources/Map.fxml"));
 //        Parent mapRoot = mapLoader.load();
 //        FarmGridController mapController = mapLoader.getController();
 //
-//        // Load the HUD FXML
 //        FXMLLoader hudLoader = new FXMLLoader(getClass().getResource("/resources/HUD.fxml"));
 //        Parent hudRoot = hudLoader.load();
 //                hudRoot.setMouseTransparent(false);
 //
-//        // Create a StackPane to layer the map and HUD
 //        StackPane rootPane = new StackPane(mapRoot, hudRoot);
 //
-//        // Create the scene
 //        Scene scene = new Scene(rootPane, 1020, 580);
 //
-//        // Set up the stage
 //        stage.setTitle("Farm to Farm");
 //        stage.setScene(scene);
 //        stage.show();
@@ -75,7 +71,6 @@ public class Main extends Application {
 //
 
 
-//    // Player Movement
 //        try {
 //Parent root = FXMLLoader.load(getClass().getResource("/resources/Main.fxml"));
 //Scene scene = new Scene(root);
@@ -166,16 +161,12 @@ public class Main extends Application {
 
 
 
-// claude - working plant
 //@Override
 //public void start(Stage primaryStage) throws Exception {
-//    // Load the FXML
 //    Parent root = FXMLLoader.load(getClass().getResource("/resources/main_game.fxml"));
 //
-//    // Create the scene
 //    Scene scene = new Scene(root, 800, 600);
 //
-//    // Set up the stage
 //    primaryStage.setTitle("Farm to Farm");
 //    primaryStage.setScene(scene);
 //    primaryStage.show();

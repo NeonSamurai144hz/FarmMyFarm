@@ -1,7 +1,9 @@
 package code;
 
 public class GameEconomy {
-    private static int playerMoney = 500;
+    private static int playerMoney = 500;   //starting money
+    public static final int SELL_PRICE = 10; //in the name
+    public static final int BUY_PRICE = 5;  //in the name
     private static MainGameController gameController;
 
     public static void setGameController(MainGameController controller) {
@@ -10,6 +12,13 @@ public class GameEconomy {
 
     public static int getPlayerMoney() {
         return playerMoney;
+    }
+
+    public static void setPlayerMoney(int amount) {
+        playerMoney = amount;
+        if (gameController != null) {
+            gameController.setMoney(playerMoney);
+        }
     }
 
     public static void addMoney(int amount) {
@@ -29,7 +38,4 @@ public class GameEconomy {
         }
         return false;
     }
-
-    public static final int SELL_PRICE = 5;
-    public static final int BUY_PRICE = 5;
 }

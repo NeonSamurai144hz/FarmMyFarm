@@ -1,7 +1,7 @@
 package code;
 
 public class AnimalSelection {
-    private static AnimalType selectedAnimalType = AnimalType.PIG;
+    private static AnimalType selectedAnimalType;
 
     public static AnimalType getSelectedAnimalType() {
         return selectedAnimalType;
