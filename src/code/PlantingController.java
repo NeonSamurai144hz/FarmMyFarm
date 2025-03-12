@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 
 public class PlantingController {
     private Map<CropType, Integer> cropStorage = new HashMap<>();
+    private static Weather currentWeather = Weather.SUNNY;
     private final int MAX_CROPS = 100;
 
     static class GrowthData {
@@ -37,8 +38,6 @@ public class PlantingController {
         }
 
         CropType currentCrop = CropSelection.getSelectedCropType();
-
-            // check for seeds
         int currentCount = cropStorage.getOrDefault(currentCrop, 0);
         if (currentCount <= 0) {
             showAlert("Not enough seeds", "You don't have any " + currentCrop.toString().toLowerCase() + " seeds.");
@@ -47,11 +46,15 @@ public class PlantingController {
 
         cropStorage.put(currentCrop, currentCount - 1);
 
-            // growth animation
+        // Calculate growth times based on weather
+        double multiplier = currentWeather.getGrowthMultiplier();
+        double stage2Time = 4.0 * multiplier;
+        double stage3Time = 8.0 * multiplier;
+
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(1), e -> parcel.setFill(currentCrop.getStage1Color())),
-                new KeyFrame(Duration.seconds(4), e -> parcel.setFill(currentCrop.getStage2Color())),
-                new KeyFrame(Duration.seconds(6), e -> {
+                new KeyFrame(Duration.seconds(stage2Time), e -> parcel.setFill(currentCrop.getStage2Color())),
+                new KeyFrame(Duration.seconds(stage3Time), e -> {
                     parcel.setFill(currentCrop.getStage3Color());
                     parcel.setUserData(new GrowthData(null, currentCrop));
                 })
@@ -61,7 +64,10 @@ public class PlantingController {
         timeline.play();
         return true;
     }
-        //alert if no seeds in store
+
+    public static void setCurrentWeather(Weather weather) {
+        currentWeather = weather;
+    }
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
@@ -69,7 +75,6 @@ public class PlantingController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-        //chose crop type
     public void openCropSelectionModal() {
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
@@ -102,7 +107,6 @@ public class PlantingController {
         modalStage.setScene(scene);
         modalStage.showAndWait();
     }
-        //allows crop harvesting
     public void harvestCrop(Rectangle parcel) {
         if (parcel.getUserData() instanceof GrowthData) {
             GrowthData data = (GrowthData) parcel.getUserData();

@@ -46,9 +46,6 @@ public class AnimalController {
         }
     }
 
-    /**
-     * Places an animal on a parcel.
-     */
     public boolean placeAnimal(Rectangle parcel) {
         System.out.println("AnimalController: Attempting to place animal");
         if (parcel.getUserData() instanceof GrowthData) {
@@ -74,9 +71,6 @@ public class AnimalController {
         return true;
     }
 
-    /**
-     * Feeds the animal on a parcel, incrementing its feeding stage.
-     */
     public void feedAnimal(Rectangle parcel) {
         if (!(parcel.getUserData() instanceof GrowthData)) {
             System.out.println("AnimalController: No animal data found on parcel.");
@@ -132,9 +126,6 @@ public class AnimalController {
         showAlert("Animal Grown", "This " + data.animalType.toString().toLowerCase() + " is now fully grown and ready for collection!");
     }
 
-    /**
-     * Collects the product from an adult animal.
-     */
     public void collectAnimalProduct(Rectangle parcel) {
         if (!(parcel.getUserData() instanceof GrowthData)) {
             return;
@@ -187,9 +178,7 @@ public class AnimalController {
         }
     }
 
-    /**
-     * Checks feed storage and consumes required feed for the given animal.
-     */
+
     private boolean checkAndConsumeFeed(AnimalType animalType) {
         Map<CropType, Integer> requiredCrops = new HashMap<>();
         switch (animalType) {

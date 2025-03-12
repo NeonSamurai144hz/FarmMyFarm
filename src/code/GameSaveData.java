@@ -9,6 +9,7 @@ public class GameSaveData implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private int playerMoney;
+    private PlayerLevel playerLevel;
     private Map<CropType, Integer> cropStorage;
     private Map<AnimalType, Integer> animalStorage;
     private Map<CropType, Integer> feedStorage;
@@ -22,8 +23,10 @@ public class GameSaveData implements Serializable {
                         Map<CropType, Integer> feedStorage,
                         Map<Resource, Integer> resourceStorage,
                         ArrayList<Finance.Transaction> transactions,
-                        ParcelData[][] gridData) {
+                        ParcelData[][] gridData,
+                        PlayerLevel playerLevel) {
         this.playerMoney = playerMoney;
+        this.playerLevel = playerLevel;
         this.cropStorage = new HashMap<>(cropStorage);
         this.animalStorage = new HashMap<>(animalStorage);
         this.feedStorage = new HashMap<>(feedStorage);
@@ -35,6 +38,10 @@ public class GameSaveData implements Serializable {
     // Getters
     public int getPlayerMoney() {
         return playerMoney;
+    }
+
+    public PlayerLevel getPlayerLevel() {
+        return playerLevel;
     }
 
     public Map<CropType, Integer> getCropStorage() {

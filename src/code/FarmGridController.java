@@ -42,7 +42,6 @@ public class FarmGridController {
     }
 
 
-    // planting using left click
     private void handleLeftClick(Pane plot) {
         String style = plot.getStyle();
         if (style != null && style.contains("darkgreen")) {

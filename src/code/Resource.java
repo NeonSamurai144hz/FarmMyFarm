@@ -1,9 +1,9 @@
 package code;
 
 public enum Resource {
-    MILK(15),    // From Cow
-    EGGS(8),     // From Chicken
-    BACON(12);   // From Pig
+    MILK(15),
+    EGGS(8),
+    BACON(12);
 
     private final int sellPrice;
 

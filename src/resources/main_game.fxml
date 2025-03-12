@@ -33,6 +33,7 @@
             <Button fx:id="storeStorageButton" text="Storage and Store" styleClass="game-button"/>
             <Button fx:id="chooseCropButton" text="Choose Crop" styleClass="game-button"/>
             <Button fx:id="chooseAnimalButton" text="Choose Animal" styleClass="game-button"/>
+            <Text fx:id="weatherText" text="☀ Sunny" styleClass="hud-text"/>
         </HBox>
     </HBox>
 

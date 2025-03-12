@@ -19,7 +19,6 @@ public class ParcelData implements Serializable {
         this.type = type;
     }
 
-    // Getters and setters
     public ParcelType getType() { return type; }
     public CropType getCropType() { return cropType; }
     public AnimalType getAnimalType() { return animalType; }

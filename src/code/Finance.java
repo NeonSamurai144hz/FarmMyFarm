@@ -46,7 +46,8 @@ public class Finance {
     }
 
     public enum TransactionType implements Serializable {
-        SELL, BUY
+        SELL,
+        BUY
     }
 
     public static void addTransaction(String itemType, String itemName, int amount, int price, TransactionType type) {

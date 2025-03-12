@@ -30,7 +30,6 @@ public class HUDController {
         expText.setText("Exp to next level: 0/100");
     }
 
-    //setters for the hud
     public void setUsername(String username) {
         usernameText.setText(username);
     }

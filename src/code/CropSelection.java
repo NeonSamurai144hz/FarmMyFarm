@@ -1,7 +1,7 @@
 package code;
 
 public class CropSelection {
-    private static CropType selectedCropType = CropType.WHEAT;
+    private static CropType selectedCropType;
 
     public static CropType getSelectedCropType() {
         return selectedCropType;
